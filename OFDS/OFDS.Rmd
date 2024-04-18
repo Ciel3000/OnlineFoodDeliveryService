@@ -1,0 +1,24 @@
+---
+title: "Online Food Delivery Service"
+Author: "Defensor - Echaveria - Quillo"
+date: "2024-04-18"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#Libraries
+library("dplyr")
+library("csv")
+library("readr")
+```
+
+```{r}
+OFDSraw <- read_csv("database-RAW/Survey on Students' Perspectives of Online Food Delivery Service.csv")
+```
