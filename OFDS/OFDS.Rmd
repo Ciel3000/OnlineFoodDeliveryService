@@ -1,6 +1,6 @@
 ---
 title: "Online Food Delivery Service"
-Author: "Defensor - Echaveria - Quillo"
+Author: "Members: Defensor - Echaveria - Quillo || Course-Yr-Sec: BSIT 2-C"
 date: "2024-04-18"
 output:
   pdf_document: default
@@ -15,10 +15,154 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 #Libraries
 library("dplyr")
-library("csv")
 library("readr")
+library("ggplot2")
 ```
 
 ```{r}
 OFDSraw <- read_csv("database-RAW/Survey on Students' Perspectives of Online Food Delivery Service.csv")
+
+OFDSraw <- slice(OFDSraw, -1)
+#I sliced the first row of the data frame because is a test when I created the google form
+
+top <- OFDSraw[13:23,]
+top
+```
+
+Cleaning of age in data
+```{r}
+# Extract numeric values from 'age' column
+OFDSage <- as.numeric(gsub("[^0-9.]", "", OFDSraw$Age))
+tempOFDSraw <- OFDSraw
+
+tempOFDSraw[["Age"]] <- OFDSage
+
+OFDSraw <- tempOFDSraw
+
+```
+
+
+Plotting of age
+```{r}
+filtered_data <- tempOFDSraw[is.finite(OFDSraw$Age), ]
+
+# Calculate range of finite ages
+age_range <- range(filtered_data$Age)
+
+# Create a histogram with more detailed x-axis
+plotofage <- ggplot(data = filtered_data, aes(x = Age)) +
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black") +  # Decrease binwidth for more detail
+  scale_x_continuous(breaks = seq(floor(age_range[1]), ceiling(age_range[2]), by = 1)) +  # Custom breaks
+  labs(title = "Distribution of Ages",
+       x = "Age",
+       y = "Frequency")
+
+plotofagemean <- mean(filtered_data$Age)
+plotofagemin <- min(filtered_data$Age)
+plotofagemax <- max(filtered_data$Age)
+
+#Min of Age
+plotofagemin
+
+#Mean of Age:
+plotofagemean
+
+#Max of Age
+plotofagemax
+
+```
+
+
+Plotting the Frequency of Address
+```{r}
+address_freq <- table(tempOFDSraw$Address)
+
+# Convert the frequency table to a data frame
+address_df <- data.frame(Address = names(address_freq), Frequency = as.numeric(address_freq))
+
+# Sort the data frame by frequency in descending order
+address_df <- address_df[order(-address_df$Frequency), ]
+
+# Plot the common addresses
+ggplot(data = head(address_df, 10), aes(x = reorder(Address, Frequency), y = Frequency)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  coord_flip() +  # Flip the coordinates to display horizontally
+  labs(title = "Top 10 Common Addresses",
+       x = "Address",
+       y = "Frequency")
+```
+
+
+Plotting the Frequency of Sex
+```{r}
+ggplot(data = OFDSraw, aes(x = Sex)) +
+  geom_bar(fill = "skyblue") +
+  labs(title = "Distribution of Sex",
+       x = "Sex",
+       y = "Frequency")
+```
+
+
+Plotting the Frequency of Living Situation
+```{r}
+ggplot(data = OFDSraw, aes(x = OFDSraw$`Living Situation`)) +
+  geom_bar(fill = "skyblue") +
+  labs(title = "Distribution of Living Situation",
+       x = "Living Situation",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+```
+
+
+Plotting the Frequency of access to reliable transportation
+```{r}
+ggplot(data = OFDSraw, aes(x = OFDSraw$`Do you have access to reliable transportation(e.g., bike, carpool)?`)) +
+  geom_bar(fill = "skyblue") +
+  labs(title = "Distribution of Access to Reliable Transportation",
+       x = "Transportation Access",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+```
+
+
+Plotting the Frequency of Educational Background
+```{r}
+ggplot(data = OFDSraw, aes(x = OFDSraw$`Educational Background`)) +
+  geom_bar(fill = "skyblue") +
+  labs(title = "Distribution of Educational Backgrounds",
+       x = "Educational Background",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+```
+
+
+Plotting the Frequency for Average Weekly Income / allowance
+```{r}
+ggplot(data = OFDSraw, aes(x = OFDSraw$`Average Weekly Income / allowance`)) +
+  geom_bar(fill = "skyblue") +
+  labs(title = "Distribution of Average Weekly Income/Allowance",
+       x = "Income",
+       y = "Frequency")
+```
+
+
+Plotting the Frequency for Frequency of Using Online Food Delivery Services
+```{r}
+ggplot(data = OFDSraw, aes(x = OFDSraw$`Frequency of Using Online Food Delivery Services`)) +
+  geom_bar(fill = "skyblue") +
+  labs(title = "Frequency of Using Online Food Delivery Services",
+       x = "Frequency",
+       y = "Count") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+```
+
+
+Plotting the Frequency for Primary Reason for Using Online Food Delivery Services
+```{r}
+ggplot(data = OFDSraw, aes(x = OFDSraw$`Primary Reason for Using Online Food Delivery Services`)) +
+  geom_bar(fill = "skyblue") +
+  labs(title = "Primary Reasons for Using Online Food Delivery Services",
+       x = "Primary Reason",
+       y = "Count") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
 ```
